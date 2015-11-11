@@ -1,8 +1,8 @@
 
-.test
+.text
 .global _start
 _start:
-       b    restet
+       b    reset
        ldr  pc, _undefined_instructions
        ldr  pc, _software_interrupt
        ldr  pc, _prefetch_abort
@@ -20,8 +20,31 @@ _not_used:               .word not_used
 _irq:                    .word irq
 _fiq:                    .word fiq    
 
+undefined_instructions:
+        nop
 
+software_interrupt:
+        nop
 
+prefetch_abort:
+        nop
+
+data_abort:
+        nop
+      
+not_used:
+        nop
+
+irq:
+        nop
+
+fiq:
+        nop
+
+reset:
+        nop
+
+  
 
 
 
