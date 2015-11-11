@@ -51,8 +51,12 @@ reset:
      bl turn_off_watchdog  /*******3. turn off watchdog********/
      bl mask_irqs          /*********4. mask all irqs**********/
      bl set_clock          /********5. set clock*******/     
+     bl disable_id_caches    /*******6. flush I/Dcaches****/
+     bl init_memory         /*****7. initialize memory controler***/
      bl light_led         /********light_led*********/
  
+
+
 set_cpu_mode:      
      /****** set to svc32 mode ******/
       mrs r0, cpsr
@@ -60,6 +64,7 @@ set_cpu_mode:
       orr r0, r0, #0xd3
       msr cpsr, r0
       mov pc, lr
+
 
 turn_off_watchdog:
      /*******turn off watchdog********/  
@@ -69,6 +74,7 @@ turn_off_watchdog:
       str r1, [r0]
       mov pc, lr
 
+
 mask_irqs:
      /*********mask all irqs**********/
       mvn r0, #0
@@ -76,6 +82,7 @@ mask_irqs:
       str r0, [r1]
       mov pc,lr
       
+
 #define CLKDIVN 0x4c000014
 #define MPLLCON 0x4C000004
 #define MPLL_405M ((0x7f<<12)|(2<<4)|(1<<0))
@@ -84,7 +91,6 @@ set_clock:
       ldr r0, =CLKDIVN
       mov r1, #0x5
       str r1, [r0]
-  
       mrc p15, 0, r0,c1,c0,0
       orr r0,r0,#0xc0000000
       mcr p15,0,r0,c1,c0,0
@@ -93,6 +99,43 @@ set_clock:
       ldr r1, =MPLL_405M
       str r1, [r0]
       mov pc, lr
+
+disable_id_caches:
+      /*******flush I/Dcaches*****/
+      mcr p15, 0, r0, c7, c7,0
+      mrc p15, 0, r0, c1, c0,0
+      bic r0, r0,#0x00000007 
+      mcr p15, 0, r0, c1,c0, 0
+      mov pc, lr
+ 
+init_memory:
+      /*******initialize memory controler********/
+      ldr r0, =0X48000000
+      add r1, r0, #4*13
+      ldr r2, =mem_data
+      
+      
+0:
+      ldr r3, [r2],#4
+      str r3, [r0],#4
+      cmp r0, r1
+      bne 0b
+      mov pc, lr
+mem_data:
+          .word 0x22000000
+          .word 0x00000700
+          .word 0x00000700
+          .word 0x00000700
+          .word 0x00000700
+          .word 0x00000700
+          .word 0x00000700
+          .word 0x00018001
+          .word 0x00018001
+          .word 0x008c04f5
+          .word 0x000000b1
+          .word 0x00000030
+          .word 0x00000030
+
 #define GPBCON 0x56000010
 #define GPBDAT 0x56000014
 #define all_output ((0x1<<10)|(0x1<<12)|(0x1<<14)|(0x1<<16))
