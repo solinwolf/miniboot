@@ -12,13 +12,13 @@ _start:
        ldr  pc, _fiq
 
 
-_undefined_instructions: .world undefined_instructions
-_software_interrupt:     .world software_interrupt
-_prefetch_abort:         .world prefetch_abort
-_data_abort:             .world data_abort
-_not_used:               .world not_used
-_irq:                    .world irq
-_fiq:                    .world fiq    
+_undefined_instructions: .word undefined_instructions
+_software_interrupt:     .word software_interrupt
+_prefetch_abort:         .word prefetch_abort
+_data_abort:             .word data_abort
+_not_used:               .word not_used
+_irq:                    .word irq
+_fiq:                    .word fiq    
 
 
 

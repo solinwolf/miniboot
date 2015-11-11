@@ -1,7 +1,7 @@
 # miniboot
 bootloader written by myself 
 本bootloader 实现的功能暂定为:
-1、设置向量表
+1、设置异常向量表
 2、设置cpu为svc32模式
 3、关闭看门狗
 4、关闭中断
