@@ -1,7 +1,7 @@
 
 
 
-OBJECTS := start.o
+OBJECTS := start.o arm_main.o
 
 miniboot.bin : miniboot.elf
 	arm-linux-objcopy -O binary  miniboot.elf miniboot.bin

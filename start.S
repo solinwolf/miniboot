@@ -51,10 +51,14 @@ reset:
      bl turn_off_watchdog  /*******3. turn off watchdog********/
      bl mask_irqs          /*********4. mask all irqs**********/
      bl set_clock          /********5. set clock*******/     
-     bl disable_id_caches    /*******6. flush I/Dcaches****/
+     bl disable_id_caches    /*******6. disable I/Dcaches and mmu ****/
      bl init_memory         /*****7. initialize memory controler***/
-     bl light_led         /********light_led*********/
- 
+     bl copy_to_ram 
+     bl init_stack
+     bl clean_bss   
+     ldr pc, =arm_main
+   @  bl light_led         /********light_led*********/
+
 
 
 set_cpu_mode:      
@@ -101,7 +105,7 @@ set_clock:
       mov pc, lr
 
 disable_id_caches:
-      /*******flush I/Dcaches*****/
+      /*******flush I/Dcaches and mmu*****/
       mcr p15, 0, r0, c7, c7,0
       mrc p15, 0, r0, c1, c0,0
       bic r0, r0,#0x00000007 
@@ -111,30 +115,64 @@ disable_id_caches:
 init_memory:
       /*******initialize memory controler********/
       ldr r0, =0X48000000
-      add r1, r0, #4*13
-      ldr r2, =mem_data
+      add r3, r0, #4*13
+      adrl r1, mem_data
       
       
 0:
-      ldr r3, [r2],#4
-      str r3, [r0],#4
-      cmp r0, r1
+      ldr r2, [r1],#4
+      str r2, [r0],#4
+      cmp r0, r3
       bne 0b
       mov pc, lr
 mem_data:
-          .word 0x22000000
-          .word 0x00000700
-          .word 0x00000700
-          .word 0x00000700
-          .word 0x00000700
-          .word 0x00000700
-          .word 0x00000700
-          .word 0x00018001
-          .word 0x00018001
-          .word 0x008c04f5
-          .word 0x000000b1
-          .word 0x00000030
-          .word 0x00000030
+          .long 0x22000000
+          .long 0x00000700
+          .long 0x00000700
+          .long 0x00000700
+          .long 0x00000700
+          .long 0x00000700
+          .long 0x00000700
+          .long 0x00018001
+          .long 0x00018001
+          .long 0x008c04f5
+          .long 0x000000b1
+          .long 0x00000030
+          .long 0x00000030
+
+
+
+
+copy_to_ram:
+      ldr r0, =0
+      ldr r1, =0x30008000
+      add r3, r0, #1024*4
+              
+1:
+      ldr r2, [r0],#4
+      str r2, [r1],#4
+      cmp r0, r3
+      bne 1b
+      mov pc, lr
+
+init_stack:
+      ldr sp, =0x34000000
+      mov pc, lr
+
+clean_bss:
+      clean_bss:
+	ldr r0, =bss_start
+	ldr r1, =bss_end
+	cmp r0, r1
+	moveq pc, lr
+
+clean_loop:
+	mov r2, #0
+	str r2, [r0], #4
+	cmp r0, r1
+	bne clean_loop
+	mov pc, lr
+
 
 #define GPBCON 0x56000010
 #define GPBDAT 0x56000014
