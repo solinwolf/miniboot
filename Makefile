@@ -21,7 +21,7 @@ lib/lib.o:
 	make -C lib all
 .PHONY:clean
 clean:
-	rm -f *.o *.elf *.bin *.bak
+	rm -f *.o *.elf *.bin *.bak *dump
 	make -C dev clean
 	make -C net clean
 	make -C lib clean
