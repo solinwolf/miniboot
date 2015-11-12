@@ -53,11 +53,11 @@ reset:
      bl set_clock          /********5. set clock*******/     
      bl disable_id_caches    /*******6. disable I/Dcaches and mmu ****/
      bl init_memory         /*****7. initialize memory controler***/
-     bl copy_to_ram 
-     bl init_stack
-     bl clean_bss   
-     ldr pc, =arm_main
-   @  bl light_led         /********light_led*********/
+     bl copy_to_ram         /****8. copy datas to sdram *****/
+     bl init_stack          /*****9. initialize stack*****8/
+     bl clean_bss           /******10. clear bss section*******/
+     ldr pc, =arm_main      /****11. jump to c coding function******/
+   @  bl light_led         /********lighting led*********/
 
 
 
@@ -144,6 +144,7 @@ mem_data:
 
 
 copy_to_ram:
+      /*******copy datas to sdram from stepping stone*****/
       ldr r0, =0
       ldr r1, =0x30008000
       add r3, r0, #1024*4
@@ -156,10 +157,12 @@ copy_to_ram:
       mov pc, lr
 
 init_stack:
+      /********initializing stack*********/
       ldr sp, =0x34000000
       mov pc, lr
 
 clean_bss:
+      /********clearing bss section**********/
       clean_bss:
 	ldr r0, =bss_start
 	ldr r1, =bss_end
@@ -179,6 +182,7 @@ clean_loop:
 #define all_output ((0x1<<10)|(0x1<<12)|(0x1<<14)|(0x1<<16))
 #define led_1_3_on (0b1010<<5)
 light_led:
+    /*******lighting led to see whether the initilization before is ok or not*******/
        ldr r0, =GPBCON
        ldr r1, =all_output
        str r1, [r0]
