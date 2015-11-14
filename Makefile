@@ -37,7 +37,7 @@ $(TOPDIR)/lib/lib.o :$(TOPDIR)/lib/*.c
 	@cd $(TOPDIR)/lib &&make
 .PHONY :clean
 clean:
-	rm  $(OBJECTS)
+	rm  $(OBJECTS) $(BIN) $(ELF)
 	@cd $(TOPDIR)/dev && make clean
 	@cd $(TOPDIR)/net && make clean
 	@cd $(TOPDIR)/lib && make clean
