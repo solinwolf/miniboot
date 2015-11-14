@@ -1,8 +1,8 @@
 
-objs := dm9000.o dma.o interrupt.o lcd.o led.o nand.o ts.o uart.o
+objs := led.o 
 
 all : $(objs)
-	arm-linux-gcc -c -g $^ -o dev.o
+	arm-linux-ld -r $^ -o dev.o
 
 
 %.o : %.c 

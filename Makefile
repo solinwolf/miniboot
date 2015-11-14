@@ -1,12 +1,12 @@
 
 
 
-OBJECTS := start.o arm_main.o
+OBJECTS := start.o arm_main.o  dev/dev.o
 
 miniboot.bin : miniboot.elf
-	arm-linux-objcopy -O binary  miniboot.elf miniboot.bin
+	arm-linux-objcopy -O binary $^ $@
 miniboot.elf : $(OBJECTS)
-	arm-linux-ld -Tminiboot.lds -o miniboot.elf $^
+	arm-linux-ld -Tminiboot.lds -o $@ $^
 	
 %.o : %.S
 	arm-linux-gcc -g -c $^ -o $@

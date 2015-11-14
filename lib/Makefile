@@ -1,7 +1,7 @@
 objs := string.o
 
 all : $(objs)
-	arm-linux-gcc -g -c $^ -o lib.o
+	arm-linux-ld -r  $^ -o lib.o
 %.o : %.S
 	arm-linux-gcc -c -g $^ -o $@
 
