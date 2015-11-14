@@ -1,15 +1,11 @@
 
-objs := dm9000.o dma.o interrupt.o lcd.o led.o nand.o ts.o uart.o
-
-all : $(objs)
-	arm-linux-gcc -c -g $^ -o dev.o
-
-
+OBJECTS = $(patsubst %.c,%.o,$(wildcard *.c))
+OBJS = dev.o
+$(OBJS) : $(OBJECTS)
+	$(LD) -r $^ -o $@
 %.o : %.c 
-	arm-linux-gcc -g -c $^ -o $@ 
+	$(GCC) -c -g $^ -o $@
 
-%.o : %.S 
-	arm-linux-gcc -g -c $^ -o $@ 
-
+.PHONY:clean
 clean:
-	rm -f *.o *.bak
+	rm -f *.o 

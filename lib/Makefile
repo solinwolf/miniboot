@@ -1,13 +1,11 @@
-objs := string.o
 
-all : $(objs)
-	arm-linux-gcc -g -c $^ -o lib.o
-%.o : %.S
-	arm-linux-gcc -c -g $^ -o $@
+OBJECTS = $(patsubst %.c,%.o,$(wildcard *.c))
+OBJS = lib.o
+$(OBJS) : $(OBJECTS)
+	$(LD) -r $^ -o $@
+%.o : %.c 
+	$(GCC) -c -g $^ -o $@
 
-%.o : %.c
-	arm-linux-gcc -c -g $^ -o $@
-
-
+.PHONY:clean
 clean:
-	rm -f *.o *.bak
+	rm -f *.o 

@@ -1,13 +1,11 @@
-objs := arp.o tftp.o
 
-all : $(objs)
-	arm-linux-gcc -g -c $^ -o net.o	
+OBJECTS = $(patsubst %.c,%.o,$(wildcard *.c))
+OBJS = net.o
+$(OBJS) : $(OBJECTS)
+	$(LD) -r $^ -o $@
+%.o : %.c 
+	$(GCC) -c -g $^ -o $@
 
-%.o : %.c
-	arm-linux-gcc -g -c $^ -o $@
-
-%.o : %.S
-	arm-linux-gcc -g -c $^ -o $@
-
+.PHONY:clean
 clean:
-	rm -f *.o *.bak
+	rm -f *.o 
