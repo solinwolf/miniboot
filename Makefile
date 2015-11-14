@@ -1,27 +1,48 @@
+TOPDIR  = $(shell pwd)
+export TOPDIR
 
+CROSS_COMPILE = arm-linux-
+GCC = $(CROSS_COMPILE)gcc
+LD = $(CROSS_COMPILE)ld
+OBJCOPY = $(CROSS_COMPILE)objcopy
+export CROSS_COMPILE GCC LD OBJCOPY
+SORCE = 
 
+ELF = miniboot.elf
+BIN  = miniboot.bin
+OBJECTS = $(patsubst %.c,%.o, $(wildcard *.c)) $(patsubst %.S,%.o,$(wildcard *.S))\
+ $(TOPDIR)/dev/dev.o $(TOPDIR)/net/net.o $(TOPDIR)/lib/lib.o
 
-OBJECTS := start.o arm_main.o  dev/dev.o
-
-miniboot.bin : miniboot.elf
-	arm-linux-objcopy -O binary $^ $@
-miniboot.elf : $(OBJECTS)
-	arm-linux-ld -Tminiboot.lds -o $@ $^
-	
+$(BIN) : $(ELF)
+	$(OBJCOPY) -O binary  $^ $@
+$(ELF) : $(OBJECTS)
+	$(LD) -Tminiboot.lds -o $@ $^
+%.o : %.c
+	$(GCC) -c $^ -o $@
 %.o : %.S
-	arm-linux-gcc -g -c $^ -o $@
-	
-%.o : %.c 
-	arm-linux-gcc -g -c $^ -o $@
-net/net.o : 
-	make -C net all
-dev/dev.o:
-	make -C dev all
-lib/lib.o:
-	make -C lib all
-.PHONY:clean
+	$(GCC) -g -c $^ -o $@
+$(TOPDIR)/dev/dev.o :$(TOPDIR)/dev/*.c
+	cd $(TOPDIR)/dev &&make
+$(TOPDIR)/net/net.o :$(TOPDIR)/net/*.c
+	cd $(TOPDIR)/net &&make
+$(TOPDIR)/lib/lib.o :$(TOPDIR)/lib/*.c
+	cd $(TOPDIR)/lib &&make
+.PHONY :clean
 clean:
-	rm -f *.o *.elf *.bin *.bak *dump
-	make -C dev clean
-	make -C net clean
-	make -C lib clean
+	rm *.o *.bin *.elf 
+	cd $(TOPDIR)/dev && make clean
+	cd $(TOPDIR)/net && make clean
+	cd $(TOPDIR)/lib && make clean
+.PHONY:env
+env:
+	@echo top_directory=$(TOPDIR)
+	@echo compile_chain:
+	@echo gcc=$(GCC)
+	@echo objcopy=$(OBJCOPY)
+	@echo ld=$(LD)
+
+
+
+
+
+
