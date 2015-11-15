@@ -110,12 +110,94 @@ void nand_PageRead(unsigned long addr, unsigned char *buff)
     diselect_chip();
 
 }
+/***按Page 大小写数据***/
+unsigned long nand_PageWrite(unsigned long addr, unsigned char *buff)
+{
+    int i = 0;
+    unsigned long ret = 0;
+    /**chip select**/
+    select_chip();
 
+    /**clear RnB signal**/
+    clear_RnB();
 
+    /**send command Input command ox80**/
+    send_cmmd(0x80);
 
+    /**send Column address**/
+    send_addr(0x00);
+    send_addr(0x00);
 
+    /**send Row address**/
+    send_addr(addr&0xff);
+    send_addr((addr>>8)&0xff);
+    send_addr((addr>>16)&0xff);
+    /**write datas**/
+    for(i=0;i<2048;i++)
+    {
+        NFDATA = buff[i];
+    }
+    /**send Program command 0x10**/
+    send_cmmd(0x10);
+    /**wait for RnB signal **/
+    wait_RnB();
+   
+    /**send read status command 0x70**/
+    send_cmmd(0x70);
 
+    /**read program status**/
+    ret = NFDATA;
+   
+    /**release chip select**/
+    diselect_chip();
 
+    return ret;
+}
+/****write datas to sdram from nand flash****/
+void nand_to_ram(unsigned long start_addr, unsigned char *sdram_addr, int size)
+{
+    int i = 0;
+    for(i=(start_addr>>11);size>0;)
+    {
+        /***each circle wirtes 1 page***/
+        nand_PageRead(i,sdram_addr);
+        size -= 2048;
+        sdram_addr += 2048;
+        i++;
+    }
+}
+/****erase nand flash****/
+unsigned long nand_erase(unsigned long addr)
+{
+    unsigned long ret = 0;
+    /**chip select**/
+    select_chip();
+    
+    /**clear RnB signal**/
+    clear_RnB();
 
+    /***send erase setup command***/
+    send_cmmd(60);
 
+    /**send Row address**/
+    send_addr(addr&0xff);
+    send_addr((addr>>8)&0xff);
+    send_addr((addr>>16)&0xff);
+    
+    /**send erase command**/
+    send_cmmd(0xd0);
+     
+    /**wait for RnB signal**/
+    wait_RnB();
 
+    /**send read status command**/
+    send_cmmd(0x70);
+    
+    /**read erase status**/
+    ret = NFDATA;
+    /***release chip select***/
+    diselect_chip();
+
+    return ret;
+
+}
