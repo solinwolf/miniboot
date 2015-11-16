@@ -53,9 +53,11 @@ reset:
      bl set_clock          /********5. set clock*******/     
      bl disable_id_caches    /*******6. disable I/Dcaches and mmu ****/
      bl init_memory         /*****7. initialize memory controler***/
-     bl copy_to_ram         /****8. copy datas to sdram *****/
+   //  bl copy_to_ram         /****8. copy datas to sdram *****/
      bl init_stack          /*****9. initialize stack*****8/
      bl clean_bss           /******10. clear bss section*******/
+     bl nand_init
+     bl nand_to_ram 
      ldr pc, =arm_main      /****11. jump to c coding function******/
    @  bl light_led         /********lighting led*********/
 
