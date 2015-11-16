@@ -11,7 +11,7 @@ functions described will be provided:
 (done)8. initialize stack section   
 (done)9. clear bss sector   
 (done)10. jump to c function    
-11. initialize nand flash controler   
+(done)11. initialize nand flash controler   
 12. download bootloader to sdram from nand flash   
 13. initialize MMU     
 14. initialize serial port    
