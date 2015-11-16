@@ -53,13 +53,11 @@ reset:
      bl set_clock          /********5. set clock*******/     
      bl disable_id_caches    /*******6. disable I/Dcaches and mmu ****/
      bl init_memory         /*****7. initialize memory controler***/
-   //  bl copy_to_ram         /****8. copy datas to sdram *****/
-     bl init_stack          /*****9. initialize stack*****8/
-     bl clean_bss           /******10. clear bss section*******/
-     bl nand_init
-     bl nand_to_ram 
-     ldr pc, =arm_main      /****11. jump to c coding function******/
-   @  bl light_led         /********lighting led*********/
+     bl init_stack          /*****8. initialize stack*****8/
+     bl clean_bss           /******9. clear bss section*******/
+     bl nand_init           /******10. initialize nand flash controler*****/
+     bl copy_to_ram         /****11. copy datas to sdram *****/
+     ldr pc, =arm_main      /****12. jump to c coding function******/
 
 
 
@@ -147,17 +145,14 @@ mem_data:
 
 copy_to_ram:
       /*******copy datas to sdram from stepping stone*****/
-      ldr r0, =0
-      ldr r1, =0x30008000
-      add r3, r0, #1024*4
-              
-1:
-      ldr r2, [r0],#4
-      str r2, [r1],#4
-      cmp r0, r3
-      bne 1b
+      mov r0, #0
+      ldr r1, =_start
+      ldr r2, =bss_end
+      sub r2, r2,r1
+      mov ip, lr
+      bl nand_to_ram
+      mov lr,ip
       mov pc, lr
-
 init_stack:
       /********initializing stack*********/
       ldr sp, =0x34000000
@@ -178,20 +173,6 @@ clean_loop:
 	bne clean_loop
 	mov pc, lr
 
-
-#define GPBCON 0x56000010
-#define GPBDAT 0x56000014
-#define all_output ((0x1<<10)|(0x1<<12)|(0x1<<14)|(0x1<<16))
-#define led_1_3_on (0b1010<<5)
-light_led:
-    /*******lighting led to see whether the initilization before is ok or not*******/
-       ldr r0, =GPBCON
-       ldr r1, =all_output
-       str r1, [r0]
-       ldr r2, =GPBDAT
-       ldr r3, =led_1_3_on
-       str r3, [r2]
-       mov pc,lr
 
 
 

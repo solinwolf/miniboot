@@ -2,8 +2,7 @@
 
 int arm_main()
 {
-    led_init(); 
-    nand_init();
-    return 0;    
+    led_init();
+    return 0;
 }
 
