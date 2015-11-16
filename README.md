@@ -1,7 +1,9 @@
 # miniboot
 bootloader for mini2440 development board
 functions described will be provided: 
+
 (done)1. set exception vectors 
+
 (done)2. set svc32 mode 
 (done)3. turn off watchdog
 (done)4. mask all irqs
