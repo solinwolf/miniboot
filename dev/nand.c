@@ -10,107 +10,107 @@
 #define TWRPH0 2
 #define TWRPH1 1
 
-/**片选**/
+/**chip select**/
 void select_chip()
 {
     NFCONT &=~(1<<1);       
 }
-/***释放片选**/
+/**release chip select**/
 void diselect_chip()
 {
     NFCONT |=(1<<1);
 }
-/**清除RnB信号，为下次操作nand flash 做准备**/
+/**clear RnB signal**/
 void clear_RnB()
 {
     NFSTAT |=(1<<2);
 }
-/**发送命令**/
+/**send command**/
 void send_cmmd(unsigned cmmd)
 {
     NFCMMD = cmmd;
 }
 
-/**发送地址**/
+/**send address**/
 void send_addr(unsigned addr)
 {
     NFADDR = addr;
 }
 
-/**等待nand flash 释放RnB信号**/
+/**wait for RnB signal**/
 void wait_RnB()
 {
     while(!(NFSTAT&(1<<2)));
 }
 
-/***复位控制器****/
+/***reset nand flash controler****/
 void nand_reset()
 {
-    /**片选**/
+    /**chip select**/
     select_chip();
    
-    /***清除RnB 信号**/
+    /**clear RnB signal**/
     clear_RnB();
 
-    /***发送命令 0xff ***/
+    /**send command 0xff ***/
     send_cmmd(0xff);
 
-    /**等待RnB 信号**/
+    /**wait for RnB signal**/
     wait_RnB();
 
-    /**释放片选**/
+    /**release chip select**/
     diselect_chip();      
 }
 
-/***初始化nand 控制器，并打开控制器**/
+/***initialize nand flash controler**/
 void nand_init()
-{   /**初始化配置寄存器，设置几个信号等待时间**/
+{   /**initialize configuration register**/
     NFCONF = (TACLS<<12)|(TWRPH0<<8)|(TWRPH1<<4);
-    /**设置控制寄存器，初始化RnB信号，并开启NAND 控制器**/
+    /**initialize control register**/
     NFCONT = (1<<0)|(1<<1);
-    /**将nand 控制器复位**/
+    /**reset nand flash controler**/
     nand_reset();  
 }
 
-/****读取一页的数据****/ 
+/****read datas by Page****/ 
 void nand_PageRead(unsigned long addr, unsigned char *buff)
 {
     int i = 0;
-    /**片选**/
+    /**chip select**/
     select_chip();
     
-    /**清除RnB 信号**/
+    /**clear RnB signal**/
     clear_RnB();
        
-    /**发送命令 0x00 **/
+    /**send command 0x00 **/
     send_cmmd(0x00);
 
-    /**发送列地址，由于是按照Page 读，所以列地址填0 即可**/
+    /**send column address**/
     send_addr(0x00);
     send_addr(0x00);
 
-    /**发送行地址，即Page号**/ 
+    /**send row address**/ 
     send_addr(addr&0xff);
     send_addr((addr>>8)&0xff);
     send_addr((addr>>16)&0xff);
 
-    /**发送命令0X30**/
+    /**send command 0x30**/
     send_cmmd(0x30);
 
-    /**等待RnB信号**/
+    /**wait for RnB signal**/
     wait_RnB();
     
-    /**读取数据**/
+    /**read datas byte by byte**/
     for(i=0;i<2048;i++)
     {
         buff[i] = NFDATA;
     }   
   
-    /**释放片选**/
+    /**release chip select**/
     diselect_chip();
 
 }
-/***按Page 大小写数据***/
+/***write datas by Page***/
 unsigned long nand_PageWrite(unsigned long addr, unsigned char *buff)
 {
     int i = 0;
@@ -201,3 +201,5 @@ unsigned long nand_erase(unsigned long addr)
     return ret;
 
 }
+
+

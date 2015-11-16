@@ -41,7 +41,7 @@ irq:
         stmfd sp!, {r0-r12,lr}       
         bl handle_int
         ldmfd sp!, {r0-r12,pc}^ /**restore environment**/
-                                /*** ^ indicates restoring cpsr from spsr**/
+                                /*** ^ indicates restore cpsr from spsr**/
 fiq:
         nop
 
