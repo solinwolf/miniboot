@@ -10,10 +10,10 @@ Functionalities described will be provided:
 (done)7. Initialize memory controler   
 (done)8. Initialize stack section   
 (done)9. Clear bss sector   
-(done)10. Jump to c function    
-(done)11. Initialize nand flash controler   
-12. Download bootloader to sdram from nand flash   
-13. Initialize MMU     
+(done)10. Initialize nand flash controler   
+(done)11. copy code to ram from nand flash   
+(done)12. Jump to c function    
+13. Initialize buttons  && interrupt    
 14. Initialize serial port    
 15. Initialize Ethernet card    
 16. Initialize LCD   
