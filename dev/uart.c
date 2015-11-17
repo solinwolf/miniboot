@@ -29,7 +29,7 @@ void uart_con_init()
     ULCON0 = (3<<0)|(0<<2)|(0<<3)|(0<<6);	
     
     /**Tx Rx Mode: polling mode; Clock for the baud rate is PCLK**/
-    UCON0 = (1<<0)|(1<<2);
+    UCON0 = 0b1001;
     
     /**Baud rate is 115200 bps PCLK = 50M***/
     UBRDIV0 = (int)(50000000/(115200*16)-1);
@@ -70,8 +70,8 @@ unsigned char getc(void)
 void display_menul()
 {
     int cmm_num = 0;
-    printf("\n*********************************\n\r");
-    printf("\n******* miniboot by Linzi *******\n\r");
+    printf("\n******************************************\n\r");
+    printf("\n********** miniboot by Linzi *************\n\r");
     printf("[1].Download Linux Kernel from TFTP Server!\n\r");
     printf("[2].Boot Linux Kernel from RAM!\n\r");
     printf("[3].Boot Linux Kernel from Nand Flash!\n\r");

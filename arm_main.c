@@ -6,7 +6,8 @@ int arm_main()
     led_init();
     irqs_init();
     uart_init();
-    
+    dma_init();
+    dma_on();    
     while(1)
     {
     	display_menul(); 

@@ -30,11 +30,9 @@ int scanf(const char* fmt, ...)
 	int i = 0;
 	va_list args;
 	
-	//1. 获取输入的字符串
-	
 	while (1)
 	{
-		
+	
 	    c = getc();	
 	    if ((c==0x0d) || (c==0x0a))
 	    {
@@ -46,9 +44,7 @@ int scanf(const char* fmt, ...)
 	        inbuf[i++] = c;	
 	    }
 	}
-	
-	//2. 格式转化
-	va_start(args, fmt);
+        va_start(args, fmt);
 	vsscanf((char *)inbuf,fmt,args);
 	va_end(args);
 	

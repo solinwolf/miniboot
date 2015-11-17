@@ -10,4 +10,4 @@ $(OBJS) : $(OBJECTS)
 
 .PHONY:clean
 clean:
-	rm -f $(OBJECTS) lib.o 
+	rm -f $(OBJECTS)
