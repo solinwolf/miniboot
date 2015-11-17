@@ -14,7 +14,7 @@ Functionalities described will be provided:
 (done)11. copy code to ram from nand flash   
 (done)12. Jump to c function    
 (done)13. Initialize buttons  && interrupt    
-14. Initialize serial port    
+(done)14. Initialize serial port    
 15. Initialize Ethernet card    
 16. Initialize LCD   
 17. Initialize touch screen   
