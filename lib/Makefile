@@ -1,11 +1,13 @@
 
-OBJECTS = $(patsubst %.c,%.o,$(wildcard *.c))
+OBJECTS = $(patsubst %.c,%.o,$(wildcard *.c)) $(patsubst %.S,%.o,$(wildcard *.S))
 OBJS = lib.o
 $(OBJS) : $(OBJECTS)
 	$(LD) -r $^ -o $@
 %.o : %.c 
-	$(GCC) -c -g $^ -o $@
+	$(GCC) $(CFLAGS) -c $^ -o $@
+%.o : %.S 
+	$(GCC) $(CFLAGS) -c $^ -o $@
 
 .PHONY:clean
 clean:
-	rm -f $(OBJECTS) 
+	rm -f $(OBJECTS) lib.o 

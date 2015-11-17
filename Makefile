@@ -15,6 +15,8 @@ LD = $(CROSS_COMPILE)ld
 OBJCOPY = $(CROSS_COMPILE)objcopy
 export CROSS_COMPILE GCC LD OBJCOPY
  
+CFLAGS = -nostdinc -I$(TOPDIR)/include -fno-builtin
+export CFLAGS
 
 ELF = miniboot.elf
 BIN  = miniboot.bin
@@ -26,9 +28,9 @@ $(BIN) : $(ELF)
 $(ELF) : $(OBJECTS)
 	$(LD) -Tminiboot.lds -o $@ $^
 %.o : %.c
-	$(GCC) -c $^ -o $@
+	$(GCC) $(CFLAGS) -c $^ -o $@
 %.o : %.S
-	$(GCC) -g -c $^ -o $@
+	$(GCC) $(CFLAGS) -c $^ -o $@
 $(TOPDIR)/dev/dev.o :$(TOPDIR)/dev/*.c
 	@cd $(TOPDIR)/dev &&make
 $(TOPDIR)/net/net.o :$(TOPDIR)/net/*.c
@@ -37,10 +39,10 @@ $(TOPDIR)/lib/lib.o :$(TOPDIR)/lib/*.c
 	@cd $(TOPDIR)/lib &&make
 .PHONY :clean
 clean:
-	rm  $(OBJECTS) $(BIN) $(ELF)
 	@cd $(TOPDIR)/dev && make clean
 	@cd $(TOPDIR)/net && make clean
 	@cd $(TOPDIR)/lib && make clean
+	rm  $(OBJECTS) $(BIN) $(ELF)
 .PHONY:env
 env:
 	@echo top_directory=$(TOPDIR)
