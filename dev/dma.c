@@ -7,7 +7,7 @@
 #define DMASKTRIG0  (*(volatile unsigned long *)0x4B000020)
 #define UTXH0      ((volatile unsigned long *)0x50000020)
 
-char *buff = "Testing DMA\n\r";
+char *buff = "\nTesting DMA\n\r";
 
 void dma_init()
 {
@@ -17,7 +17,7 @@ void dma_init()
     DIDST0 = UTXH0;
     DIDSTC0 = (1<<1)|(1<<0);
 
-    DCON0 = (1<<24)|(1<<23)|(1<<22)|(13<<0);
+    DCON0 = (1<<24)|(1<<23)|(1<<22)|(strlen((char*)buff)<<0);
     
 }
 

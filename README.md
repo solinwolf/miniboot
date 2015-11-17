@@ -15,9 +15,9 @@ Functionalities described will be provided:
 (done)12. Jump to c function    
 (done)13. Initialize buttons  && interrupt    
 (done)14. Initialize serial port    
-(done)extra:Initialize DMA controler
-15. Initialize Ethernet card    
-16. Initialize LCD   
-17. Initialize touch screen   
-18. Wait for and execute command lines   
+(done)15:Initialize DMA controler
+16. Initialize Ethernet card    
+17. Initialize LCD   
+18. Initialize touch screen   
+19. Wait for and execute command lines   
 
